@@ -1,0 +1,22 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "plugins": ["import", "@typescript-eslint"],
+  "parser": "@typescript-eslint/parser",
+  "extends": ["airbnb-typescript"],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "rules": {
+    "semi": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "error",
+    "object-curly-newline": "off",
+    "comma-dangle": "off"
+  }
+}
