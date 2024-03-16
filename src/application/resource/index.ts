@@ -1,6 +1,6 @@
-import type * as ResourceRepository from '../../domain/resource/repository'
-import type * as UserRepository from '../../domain/user/repository'
-import type * as EventRepository from '../../domain/event/repository'
+import type * as ResourceRepository from '@domain/resource/repository'
+import type * as UserRepository from '@domain/user/repository'
+import type * as EventRepository from '@domain/event/repository'
 
 import type * as UseCases from './entities'
 import {
@@ -24,8 +24,8 @@ export const useCases = (
       return CreateResourceErrors.NoUserWithThisId
     }
     const resource = factories.resourceFactory(userId, title, content, 0)
-    await saveOneResource(resource)
-    return resource.id
+    const id = await saveOneResource(resource)
+    return id
   },
 
   deleteResource: async (id) => {

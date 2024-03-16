@@ -1,13 +1,14 @@
-type Id = string
+type Id = number
 type Email = string
 type Name = string
 
 type User = {
-  id: Id
   name: Name
   email: Email
   createdAt: Date
   updatedAt: Date
 }
 
-export type { Id, User, Name, Email }
+type PersistedUser = User & { id: Id }
+
+export type { Id, User, PersistedUser, Name, Email }

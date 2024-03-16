@@ -1,4 +1,4 @@
-import type * as User from '../../domain/user/entities'
+import type * as User from '@domain/user/entities'
 
 enum GetUserErrors {
   NoUserWithThisId = 'No user with this Id'

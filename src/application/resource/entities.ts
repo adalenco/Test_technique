@@ -1,5 +1,5 @@
-import type * as User from '../../domain/user/entities'
-import type * as Resource from '../../domain/resource/entities'
+import type * as User from '@domain/user/entities'
+import type * as Resource from '@domain/resource/entities'
 
 enum CreateResourceErrors {
   NoUserWithThisId = 'No user with this Id'

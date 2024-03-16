@@ -1,12 +1,11 @@
 import type * as User from '../user/entities'
 
-type Id = string
+type Id = number
 type Title = string
 type Content = string
 type Hit = number
 
 type Resource = {
-  id: Id
   publisher: User.Id
   title: Title
   content: Content
@@ -14,4 +13,6 @@ type Resource = {
   hit: Hit
 }
 
-export type { Id, Title, Content, Resource, Hit }
+type PersistedResource = Resource & { id: Id }
+
+export type { Id, Title, Content, Resource, PersistedResource, Hit }

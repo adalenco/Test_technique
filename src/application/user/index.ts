@@ -1,4 +1,4 @@
-import type * as UserRepository from '../../domain/user/repository'
+import type * as UserRepository from '@domain/user/repository'
 
 import type * as UseCases from './entities'
 import { GetUserErrors, CreateUserErrors, UpdateUserErrors } from './entities'
@@ -24,8 +24,8 @@ export const useCases = (
       return CreateUserErrors.UserEmailAlreadyExists
     }
     const newUser = factories.userFactory(name, email)
-    await saveOneUser(newUser)
-    return newUser.id
+    const id = await saveOneUser(newUser)
+    return id
   },
   deleteUser: async (id) => {
     await deleteOneUserById(id)
