@@ -6,14 +6,14 @@ import type * as PgResource from './entities'
 import * as utils from './utils'
 
 const getOneResourceById =
-  (pool: Pg.Pool): Repository.GetOneResourceById =>
+  (client: Pg.Client): Repository.GetOneResourceById =>
   async (id) => {
     const query = `
     SELECT * FROM public.resources
     WHERE id=$1;`
     const values = [id]
     try {
-      const result = await pool.query<PgResource.PersistedResource>(
+      const result = await client.query<PgResource.PersistedResource>(
         query,
         values
       )
@@ -27,7 +27,7 @@ const getOneResourceById =
   }
 
 const saveOneResource =
-  (pool: Pg.Pool): Repository.SaveOneResource =>
+  (client: Pg.Client): Repository.SaveOneResource =>
   async (resource) => {
     const query = `
     INSERT INTO public.resources
@@ -42,15 +42,16 @@ const saveOneResource =
       resource.hit
     ]
     try {
-      const result = await pool.query<PgResource.PgReturningId>(query, values)
+      const result = await client.query<PgResource.PgReturningId>(query, values)
       return result.rows[0].id
     } catch (error) {
-      throw new Error('pg error')
+      console.log('error', error)
+      throw new Error(`Error insert resource ${error}`)
     }
   }
 
 const updateOneResource =
-  (pool: Pg.Pool): Repository.UpdateOneResource =>
+  (client: Pg.Client): Repository.UpdateOneResource =>
   async (resource) => {
     const query = `
       UPDATE public.resources
@@ -64,21 +65,21 @@ const updateOneResource =
       resource.id
     ]
     try {
-      await pool.query(query, values)
+      await client.query(query, values)
     } catch (error) {
       throw new Error('pg error')
     }
   }
 
 const deleteOneResource =
-  (pool: Pg.Pool): Repository.DeleteOneResourceById =>
+  (client: Pg.Client): Repository.DeleteOneResourceById =>
   async (id) => {
     const query = `
         DELETE FROM public.resources
         WHERE id = $1`
     const values = [id]
     try {
-      await pool.query(query, values)
+      await client.query(query, values)
     } catch (error) {
       throw new Error('pg error')
     }

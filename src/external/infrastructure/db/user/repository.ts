@@ -6,14 +6,14 @@ import type * as PgUser from './entities'
 import * as utils from './utils'
 
 const getOneUserById =
-  (pool: Pg.Pool): Repository.GetOneUserById =>
+  (client: Pg.Client): Repository.GetOneUserById =>
   async (id) => {
     const query = `
     SELECT * FROM public.users
     WHERE id=$1;`
     const values = [id]
     try {
-      const result = await pool.query<PgUser.PersistedUser>(query, values)
+      const result = await client.query<PgUser.PersistedUser>(query, values)
       if (result.rows.length === 0) {
         return null
       }
@@ -24,14 +24,14 @@ const getOneUserById =
   }
 
 const getOneUserByEmail =
-  (pool: Pg.Pool): Repository.GetOneUserByEmail =>
+  (client: Pg.Client): Repository.GetOneUserByEmail =>
   async (email) => {
     const query = `
     SELECT * FROM public.users
     WHERE email=$1;`
     const values = [email]
     try {
-      const result = await pool.query<PgUser.PersistedUser>(query, values)
+      const result = await client.query<PgUser.PersistedUser>(query, values)
       if (result.rows.length === 0) {
         return null
       }
@@ -42,7 +42,7 @@ const getOneUserByEmail =
   }
 
 const saveOneUser =
-  (pool: Pg.Pool): Repository.SaveOneUser =>
+  (client: Pg.Client): Repository.SaveOneUser =>
   async (user) => {
     const query = `
     INSERT INTO public.users
@@ -51,7 +51,7 @@ const saveOneUser =
     RETURNING id;`
     const values = [user.name, user.email, user.createdAt, user.updatedAt]
     try {
-      const result = await pool.query<PgUser.PgReturningId>(query, values)
+      const result = await client.query<PgUser.PgReturningId>(query, values)
       return result.rows[0].id
     } catch (error) {
       throw new Error('pg error')
@@ -59,7 +59,7 @@ const saveOneUser =
   }
 
 const updateOneUser =
-  (pool: Pg.Pool): Repository.UpdateOneUser =>
+  (client: Pg.Client): Repository.UpdateOneUser =>
   async (user) => {
     const query = `
       UPDATE public.users
@@ -67,21 +67,21 @@ const updateOneUser =
       WHERE id = $4`
     const values = [user.name, user.email, new Date(), user.id]
     try {
-      await pool.query(query, values)
+      await client.query(query, values)
     } catch (error) {
       throw new Error('pg error')
     }
   }
 
 const deleteOneUser =
-  (pool: Pg.Pool): Repository.DeleteOneUserById =>
+  (client: Pg.Client): Repository.DeleteOneUserById =>
   async (id) => {
     const query = `
         DELETE FROM public.users
         WHERE id = $1`
     const values = [id]
     try {
-      await pool.query(query, values)
+      await client.query(query, values)
     } catch (error) {
       throw new Error('pg error')
     }

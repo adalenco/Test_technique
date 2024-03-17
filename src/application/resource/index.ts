@@ -3,11 +3,7 @@ import type * as UserRepository from '@domain/user/repository'
 import type * as EventRepository from '@domain/event/repository'
 
 import type * as UseCases from './entities'
-import {
-  CreateResourceErrors,
-  GetResourceErrors,
-  IncrementResourceHitErrors
-} from './entities'
+import { CreateResourceErrors, GetResourceErrors } from './entities'
 import * as factories from './factories'
 
 export const useCases = (
@@ -15,7 +11,6 @@ export const useCases = (
   saveOneResource: ResourceRepository.SaveOneResource,
   getOneResourceById: ResourceRepository.GetOneResourceById,
   deleteOneResourceById: ResourceRepository.DeleteOneResourceById,
-  updateOneResource: ResourceRepository.UpdateOneResource,
   emitResourceAccessEvent: EventRepository.EmitResourceAccessEvent
 ): UseCases.Repository => ({
   createResource: async (userId, title, content) => {
@@ -39,15 +34,5 @@ export const useCases = (
     }
     emitResourceAccessEvent(resource.id)
     return resource
-  },
-
-  incrementResourceHit: async (id) => {
-    const resource = await getOneResourceById(id)
-    if (resource === null) {
-      return IncrementResourceHitErrors.NoRessourceWithThisId
-    }
-    const newResource = { ...resource, hit: resource.hit + 1 }
-    await updateOneResource(newResource)
-    return newResource.hit
   }
 })

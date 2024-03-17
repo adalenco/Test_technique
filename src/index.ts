@@ -1,18 +1,33 @@
 import express from 'express'
-// import router from './routes'
+import pg from 'pg'
+import { EventEmitter } from 'events'
+
+import { injection } from './injection'
 
 const app = express()
+const event = new EventEmitter()
+const client = new pg.Client({
+  user: 'admin',
+  password: 'admin',
+  host: 'localhost',
+  port: 5432,
+  database: 'test_technique'
+})
+
+client
+  .connect()
+  .then(() => {
+    console.log('Connected to PostgreSQL database')
+  })
+  .catch((err) => {
+    console.error('Error connecting to PostgreSQL database', err)
+  })
+
+const routers = injection(client, event)
 
 app.use(express.json())
 
-app.use((_req, _res, next) => {
-  setTimeout(next, Math.floor(Math.random() * 2000 + 100))
-})
+app.use('/user', routers.userRoutes)
+app.use('/resource', routers.resourceRoutes)
 
-app.use((_req, res) => {
-  res.status(404)
-
-  res.json({ error: 'Not found' })
-})
-
-app.listen(3003, () => console.log(`Example app listening port ${3003}!`))
+app.listen(3000, () => console.log(`Example app listening port ${3000}!`))

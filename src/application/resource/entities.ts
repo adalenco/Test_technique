@@ -7,9 +7,6 @@ enum CreateResourceErrors {
 enum GetResourceErrors {
   NoRessourceWithThisId = 'No resource with this id'
 }
-enum IncrementResourceHitErrors {
-  NoRessourceWithThisId = 'No resource with this id'
-}
 
 type CreateResource = (
   userId: User.Id,
@@ -23,23 +20,12 @@ type GetResource = (
   id: Resource.Id
 ) => Promise<GetResourceErrors | Resource.Resource>
 
-type IncrementResourceHit = (
-  id: Resource.Id
-) => Promise<IncrementResourceHitErrors | Resource.Hit>
-
 interface Repository {
   createResource: CreateResource
   deleteResource: DeleteResource
   getRessource: GetResource
-  incrementResourceHit: IncrementResourceHit
 }
 
-export type {
-  Repository,
-  IncrementResourceHit,
-  GetResource,
-  DeleteResource,
-  CreateResource
-}
+export type { Repository, GetResource, DeleteResource, CreateResource }
 
-export { IncrementResourceHitErrors, GetResourceErrors, CreateResourceErrors }
+export { GetResourceErrors, CreateResourceErrors }

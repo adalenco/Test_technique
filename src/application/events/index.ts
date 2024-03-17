@@ -1,5 +1,10 @@
 import type { EventEmitter } from 'events'
-import type * as Resource from '../../domain/resource/entities'
+
+import type * as Resource from '@domain/resource/entities'
+import type * as ResourceRepository from '@domain/resource/repository'
+
+import type * as Events from './entitites'
+import { IncrementResourceHitErrors } from './entitites'
 
 const RESOURCE_ACCESS_EVENT = 'RESOURCE_ACCESS_EVENT'
 
@@ -14,9 +19,19 @@ const emitResourceAccessEvent =
     }
   }
 
-const onResourceAccessEvent = () => {
-  const event = new EventEmitter()
-  event.on(RESOURCE_ACCESS_EVENT, (id) => {})
-}
+const useCases = (
+  getOneResourceById: ResourceRepository.GetOneResourceById,
+  updateOneResource: ResourceRepository.UpdateOneResource
+): Events.Repository => ({
+  incrementResourceHit: async (id) => {
+    const resource = await getOneResourceById(id)
+    if (resource === null) {
+      return IncrementResourceHitErrors.NoRessourceWithThisId
+    }
+    const newResource = { ...resource, hit: resource.hit + 1 }
+    await updateOneResource(newResource)
+    return newResource.hit
+  }
+})
 
-export { RESOURCE_ACCESS_EVENT, emitResourceAccessEvent }
+export { RESOURCE_ACCESS_EVENT, emitResourceAccessEvent, useCases }
