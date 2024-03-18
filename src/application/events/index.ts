@@ -1,10 +1,10 @@
 import type { EventEmitter } from 'events'
 
 import type * as Resource from '@domain/resource/entities'
-import type * as ResourceRepository from '@domain/resource/repository'
+import type * as ResourceRepository from '@domain/resource/index.ts'
 
-import type * as Events from './entitites'
-import { IncrementResourceHitErrors } from './entitites'
+import type * as Events from './entities'
+import { IncrementResourceHitErrors } from './entities'
 
 const RESOURCE_ACCESS_EVENT = 'RESOURCE_ACCESS_EVENT'
 

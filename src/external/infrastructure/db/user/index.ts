@@ -1,48 +1,48 @@
 import type Pg from 'pg'
 
-import * as Repository from '@domain/user/repository'
+import * as Repository from '@domain/user'
 
 import type * as PgUser from './entities'
 import * as utils from './utils'
 
 const getOneUserById =
-  (client: Pg.Client): Repository.GetOneUserById =>
+  (pool: Pg.Pool): Repository.GetOneUserById =>
   async (id) => {
     const query = `
     SELECT * FROM public.users
     WHERE id=$1;`
     const values = [id]
     try {
-      const result = await client.query<PgUser.PersistedUser>(query, values)
+      const result = await pool.query<PgUser.PersistedUser>(query, values)
       if (result.rows.length === 0) {
         return null
       }
       return utils.fromPgPersistedUserToPersistedUser(result.rows[0])
     } catch (error) {
-      throw new Error('pg error')
+      throw new Error(`Error get resource by id ${error}`)
     }
   }
 
 const getOneUserByEmail =
-  (client: Pg.Client): Repository.GetOneUserByEmail =>
+  (pool: Pg.Pool): Repository.GetOneUserByEmail =>
   async (email) => {
     const query = `
     SELECT * FROM public.users
     WHERE email=$1;`
     const values = [email]
     try {
-      const result = await client.query<PgUser.PersistedUser>(query, values)
+      const result = await pool.query<PgUser.PersistedUser>(query, values)
       if (result.rows.length === 0) {
         return null
       }
       return utils.fromPgPersistedUserToPersistedUser(result.rows[0])
     } catch (error) {
-      throw new Error('pg error')
+      throw new Error(`Error get resource by email ${error}`)
     }
   }
 
 const saveOneUser =
-  (client: Pg.Client): Repository.SaveOneUser =>
+  (pool: Pg.Pool): Repository.SaveOneUser =>
   async (user) => {
     const query = `
     INSERT INTO public.users
@@ -51,15 +51,15 @@ const saveOneUser =
     RETURNING id;`
     const values = [user.name, user.email, user.createdAt, user.updatedAt]
     try {
-      const result = await client.query<PgUser.PgReturningId>(query, values)
+      const result = await pool.query<PgUser.PgReturningId>(query, values)
       return result.rows[0].id
     } catch (error) {
-      throw new Error('pg error')
+      throw new Error(`Error insert user ${error}`)
     }
   }
 
 const updateOneUser =
-  (client: Pg.Client): Repository.UpdateOneUser =>
+  (pool: Pg.Pool): Repository.UpdateOneUser =>
   async (user) => {
     const query = `
       UPDATE public.users
@@ -67,23 +67,23 @@ const updateOneUser =
       WHERE id = $4`
     const values = [user.name, user.email, new Date(), user.id]
     try {
-      await client.query(query, values)
+      await pool.query(query, values)
     } catch (error) {
-      throw new Error('pg error')
+      throw new Error(`Error udpate resource ${error}`)
     }
   }
 
 const deleteOneUser =
-  (client: Pg.Client): Repository.DeleteOneUserById =>
+  (pool: Pg.Pool): Repository.DeleteOneUserById =>
   async (id) => {
     const query = `
         DELETE FROM public.users
         WHERE id = $1`
     const values = [id]
     try {
-      await client.query(query, values)
+      await pool.query(query, values)
     } catch (error) {
-      throw new Error('pg error')
+      throw new Error(`Error delete resource ${error}`)
     }
   }
 

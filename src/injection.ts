@@ -1,32 +1,32 @@
-import type { Client } from 'pg'
+import type { Pool } from 'pg'
 import type { EventEmitter } from 'events'
 
 import * as userUseCases from '@application/user'
 import * as resourceUseCases from '@application/resource'
 import * as eventHandler from '@application/events'
-import * as userRepository from '@db/user/repository'
-import * as resourceRepository from '@db/resource/repository'
+import * as userRepository from '@db/user'
+import * as resourceRepository from '@db/resource'
 import * as userRouter from '@api/routes/user'
 import * as resourceRouter from '@api/routes/resource'
 import * as events from '@events/index'
 
-export const injection = (client: Client, event: EventEmitter) => {
+export const injection = (pool: Pool, event: EventEmitter) => {
   const userRouterLoaded = userRouter.routes(
     userUseCases.useCases(
-      userRepository.getOneUserById(client),
-      userRepository.getOneUserByEmail(client),
-      userRepository.deleteOneUser(client),
-      userRepository.saveOneUser(client),
-      userRepository.updateOneUser(client)
+      userRepository.getOneUserById(pool),
+      userRepository.getOneUserByEmail(pool),
+      userRepository.deleteOneUser(pool),
+      userRepository.saveOneUser(pool),
+      userRepository.updateOneUser(pool)
     )
   )
 
   const resourceRoutesLoaded = resourceRouter.routes(
     resourceUseCases.useCases(
-      userRepository.getOneUserById(client),
-      resourceRepository.saveOneResource(client),
-      resourceRepository.getOneResourceById(client),
-      resourceRepository.deleteOneResource(client),
+      userRepository.getOneUserById(pool),
+      resourceRepository.saveOneResource(pool),
+      resourceRepository.getOneResourceById(pool),
+      resourceRepository.deleteOneResource(pool),
       eventHandler.emitResourceAccessEvent(event)
     )
   )
@@ -34,8 +34,8 @@ export const injection = (client: Client, event: EventEmitter) => {
   events.events(
     event,
     eventHandler.useCases(
-      resourceRepository.getOneResourceById(client),
-      resourceRepository.updateOneResource(client)
+      resourceRepository.getOneResourceById(pool),
+      resourceRepository.updateOneResource(pool)
     )
   )
 

@@ -1,6 +1,6 @@
-import type * as ResourceRepository from '@domain/resource/repository'
-import type * as UserRepository from '@domain/user/repository'
-import type * as EventRepository from '@domain/event/repository'
+import type * as ResourceRepository from '@domain/resource/index.ts'
+import type * as UserRepository from '@domain/user'
+import type * as EventRepository from '@domain/event'
 
 import type * as UseCases from './entities'
 import { CreateResourceErrors, GetResourceErrors } from './entities'
@@ -27,7 +27,7 @@ export const useCases = (
     await deleteOneResourceById(id)
   },
 
-  getRessource: async (id) => {
+  getResource: async (id) => {
     const resource = await getOneResourceById(id)
     if (resource === null) {
       return GetResourceErrors.NoRessourceWithThisId

@@ -13,7 +13,8 @@ interface CreateUserRequest extends Request {
 }
 interface CreateUserResponse extends Response {
   json: Send<
-    { id: number } | UseCases.CreateUserErrors.UserEmailAlreadyExists,
+    | { id: number }
+    | { error: UseCases.CreateUserErrors.UserEmailAlreadyExists },
     this
   >
 }
@@ -31,13 +32,19 @@ export const routes = (repository: UseCases.Repository) => {
   const router = Router()
   router.get('/:id', async (request: GetUserRequest, response) => {
     const { id } = request.params
-    const result = await repository.getUser(parseInt(id))
-    switch (result) {
-      case UseCases.GetUserErrors.NoUserWithThisId:
-        response.sendStatus(404).send(UseCases.GetUserErrors.NoUserWithThisId)
-        break
-      default:
-        response.status(200).json(result)
+    try {
+      const result = await repository.getUser(parseInt(id))
+      switch (result) {
+        case UseCases.GetUserErrors.NoUserWithThisId:
+          response
+            .status(404)
+            .json({ error: UseCases.GetUserErrors.NoUserWithThisId })
+          break
+        default:
+          response.status(200).json(result)
+      }
+    } catch (error) {
+      response.sendStatus(500)
     }
   })
 
@@ -45,15 +52,19 @@ export const routes = (repository: UseCases.Repository) => {
     '/',
     async (request: CreateUserRequest, response: CreateUserResponse) => {
       const { email, name } = request.body
-      const result = await repository.createUser(name, email)
-      switch (result) {
-        case UseCases.CreateUserErrors.UserEmailAlreadyExists:
-          response
-            .status(404)
-            .send(UseCases.CreateUserErrors.UserEmailAlreadyExists)
-          break
-        default:
-          response.status(200).json({ id: result })
+      try {
+        const result = await repository.createUser(name, email)
+        switch (result) {
+          case UseCases.CreateUserErrors.UserEmailAlreadyExists:
+            response
+              .status(409)
+              .json({ error: UseCases.CreateUserErrors.UserEmailAlreadyExists })
+            break
+          default:
+            response.status(200).json({ id: result })
+        }
+      } catch (error) {
+        response.sendStatus(500)
       }
     }
   )
@@ -61,25 +72,35 @@ export const routes = (repository: UseCases.Repository) => {
   router.put('/:id', async (request: UpdateUserRequest, response) => {
     const { email, name } = request.body
     const { id } = request.params
-    const result = await repository.updateUser(parseInt(id), name, email)
-    switch (result) {
-      case UseCases.UpdateUserErrors.NoUserWithThisId:
-        response.status(404).send(UseCases.UpdateUserErrors.NoUserWithThisId)
-        break
-      case UseCases.UpdateUserErrors.UserEmailAlreadyExists:
-        response
-          .status(409)
-          .send(UseCases.UpdateUserErrors.UserEmailAlreadyExists)
-        break
-      default:
-        response.sendStatus(204)
+    try {
+      const result = await repository.updateUser(parseInt(id), name, email)
+      switch (result) {
+        case UseCases.UpdateUserErrors.NoUserWithThisId:
+          response
+            .status(404)
+            .json({ error: UseCases.UpdateUserErrors.NoUserWithThisId })
+          break
+        case UseCases.UpdateUserErrors.UserEmailAlreadyExists:
+          response
+            .status(409)
+            .json({ error: UseCases.UpdateUserErrors.UserEmailAlreadyExists })
+          break
+        default:
+          response.sendStatus(204)
+      }
+    } catch (error) {
+      response.sendStatus(500)
     }
   })
 
   router.delete('/:id', async (request: DeleteUserRequest, response) => {
     const { id } = request.params
-    await repository.deleteUser(parseInt(id))
-    response.sendStatus(204)
+    try {
+      await repository.deleteUser(parseInt(id))
+      response.sendStatus(204)
+    } catch (error) {
+      response.sendStatus(500)
+    }
   })
   return router
 }

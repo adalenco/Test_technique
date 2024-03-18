@@ -1,4 +1,4 @@
-import type * as UserRepository from '@domain/user/repository'
+import type * as UserRepository from '@domain/user'
 
 import type * as UseCases from './entities'
 import { GetUserErrors, CreateUserErrors, UpdateUserErrors } from './entities'

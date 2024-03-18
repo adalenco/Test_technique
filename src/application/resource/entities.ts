@@ -5,7 +5,7 @@ enum CreateResourceErrors {
   NoUserWithThisId = 'No user with this Id'
 }
 enum GetResourceErrors {
-  NoRessourceWithThisId = 'No resource with this id'
+  NoRessourceWithThisId = 'No resource with this Id'
 }
 
 type CreateResource = (
@@ -23,7 +23,7 @@ type GetResource = (
 interface Repository {
   createResource: CreateResource
   deleteResource: DeleteResource
-  getRessource: GetResource
+  getResource: GetResource
 }
 
 export type { Repository, GetResource, DeleteResource, CreateResource }

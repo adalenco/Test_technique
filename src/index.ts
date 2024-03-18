@@ -6,7 +6,7 @@ import { injection } from './injection'
 
 const app = express()
 const event = new EventEmitter()
-const client = new pg.Client({
+const pool = new pg.Pool({
   user: 'admin',
   password: 'admin',
   host: 'localhost',
@@ -14,7 +14,7 @@ const client = new pg.Client({
   database: 'test_technique'
 })
 
-client
+pool
   .connect()
   .then(() => {
     console.log('Connected to PostgreSQL database')
@@ -23,7 +23,7 @@ client
     console.error('Error connecting to PostgreSQL database', err)
   })
 
-const routers = injection(client, event)
+const routers = injection(pool, event)
 
 app.use(express.json())
 
