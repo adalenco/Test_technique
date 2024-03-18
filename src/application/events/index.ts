@@ -1,7 +1,7 @@
 import type { EventEmitter } from 'events'
 
 import type * as Resource from '@domain/resource/entities'
-import type * as ResourceRepository from '@domain/resource/index.ts'
+import type * as ResourceRepository from '@domain/resource/index'
 
 import type * as Events from './entities'
 import { IncrementResourceHitErrors } from './entities'

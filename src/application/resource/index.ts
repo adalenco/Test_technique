@@ -1,4 +1,4 @@
-import type * as ResourceRepository from '@domain/resource/index.ts'
+import type * as ResourceRepository from '@domain/resource/index'
 import type * as UserRepository from '@domain/user'
 import type * as EventRepository from '@domain/event'
 

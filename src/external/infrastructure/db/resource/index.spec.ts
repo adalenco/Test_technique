@@ -1,7 +1,6 @@
 import type { Pool } from 'pg'
 
 import * as testUtils from '../test_utils/index'
-import type * as User from '@domain/user/entities'
 import type * as Resource from '@domain/resource/entities'
 
 import * as repository from '.'
@@ -77,7 +76,7 @@ const getResourceById = async (
   }
 }
 
-describe('user postgresql requests', () => {
+describe('resource postgresql requests', () => {
   describe('getOneResourceById', () => {
     it('should throw an error on database error', async () => {
       const resourceIdMock = 0

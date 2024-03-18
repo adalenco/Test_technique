@@ -1,5 +1,4 @@
 import * as Resource from '@domain/resource/entities'
-import * as User from '@domain/user/entities'
 
 import { useCases } from './index'
 import * as eventsEntities from './entities'
